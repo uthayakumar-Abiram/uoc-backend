@@ -17,18 +17,14 @@ const authUser= asyncHandler(async(req,res)=>{
     const {email,password}=req.body;
     const user=await User.findOne({email});
 
-    // const query = await User.updateMany({}, { $set : {'notifications':[]}})
-    // I used above code for adding new filed to all documents in users collection
-
-    // const jobs=await jobSeek.updateMany({}, { $set: { jobsHistory: [] } });
    
     if(user && (await user.matchPassword(password))){
         
        
 
-        generateToken(res,user._id)
+      const token=  generateToken(res,user._id)
         
-        res.status(202).json(user);
+        res.status(202).json({user,token});
        
         
     }else{
@@ -87,7 +83,7 @@ try {
     // Generate token and send response
     generateToken(res, student._id);
    return res.status(201).json({
-      student: {
+      user: {
         id: student._id,
         indexNumber: student.indexNumber,
         firstName: student.firstName,
@@ -103,11 +99,11 @@ try {
       },
     });
   } else {
-    res.status(400);
-    throw new Error("Invalid student data");
+    return  res.status(400).json({message:"Invalid student data"});
   }
     
 } catch (error) {
+    console.log("error in register",error);
     return res.status(500).json({message:error.message})
 }
   

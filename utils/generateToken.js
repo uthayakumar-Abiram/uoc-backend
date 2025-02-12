@@ -13,6 +13,8 @@ const generateToken=(res,userId)=>{
         sameSite:"None",
         maxAge:30*24*60*60*1000
     })
+
+    return token
 }
 
 
