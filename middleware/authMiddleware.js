@@ -4,32 +4,33 @@ import User from "../models/userModel.js";
 
 
 const protect =asyncHandler(async(req,res,next)=>{
-    let token;
-    token=req.cookies.jwt;
+   
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+console.log(token);
+
+  if (!token) {
+    return res.status(401).json({ error: 'token missing' })
+  }
     
     if(token){
         try{
             const decoded =jwt.verify(token,process.env.JWT_SECRET);
+console.log(decoded);
 
             req.user=await User.findById(decoded.userId).select("-password");
             
             if(req.user){
-                const jobgiver=await jobRec.findOne({userId:decoded.userId});
-                const jobseeker=await jobSeek.findOne({userId:decoded.userId});
-                if(jobgiver){
-                   
-                    req.user.jobGiverId=jobgiver._id;
-                   
-                }else if(jobseeker){
-                    
-                    req.user.jobSeekerId=jobseeker._id
-                    
-
-                }
-                 
-                
+              console.log(req.user);
+              
+ 
+                next();
             }
-            next();
 
         }catch(error){
             res.status(401);

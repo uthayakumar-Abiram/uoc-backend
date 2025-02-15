@@ -257,12 +257,15 @@ const markAsRead =async(req,res)=>{
 
 const postContactMessages = async (req, res) => {
     try {
-        const { name, email, phone, message } = req.body
+        const { question, description } = req.body
+        const { _id } = req.user
 
+        console.log(req.user);
 
-        const messageSaved = await ContactMessages.create({ name, email, phone, message })
+        const messageSaved = await ContactMessages.create({ userId:_id,question, description })
 
         if (messageSaved) {
+            console.log(messageSaved);
             res.status(201).json({ success: true, message: messageSaved })
         }
 

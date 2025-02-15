@@ -25,7 +25,7 @@ router.put("/profile",protect,updateUserProfile);
 router.get('/allusers', protect,isAdmin,allUsers);  //done
 router.get('/notifications', protect,notifications);  //done
 router.put('/markasread', protect,markAsRead);   //done
-router.post('/contactMessage',postContactMessages);   
+router.post('/contactMessage',protect,postContactMessages);   
 
 
 
