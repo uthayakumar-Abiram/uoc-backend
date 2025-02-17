@@ -124,28 +124,11 @@ const logoutUser= asyncHandler(async(req,res)=>{
 const getUserProfile= asyncHandler(async(req,res)=>{
    try{
     const use_Id=req.user._id;
-    const profile=await User.find(use_Id)
+    const profile=await User.findById(use_Id)
     
     if(profile){
     
-        const jobgiver=await jobRec.findOne({userId:use_Id});
-        const jobseeker=await jobSeek.findOne({userId:use_Id})
-
-        // console.log(jobgiver);
-        // console.log(jobseeker);
-
-        if(jobgiver){
-            
-            res.status(200).json(jobgiver);
-
-
-        }else if(jobseeker){
-
-            res.status(200).json(jobseeker);
-
-        }else{
-            res.status(200).json({message:"basic account"});
-        }
+        res.status(200).json(profile);
 
    }
 
