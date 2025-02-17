@@ -2,7 +2,6 @@
 
 import User from "../models/userModel.js";
 
-
 import asyncHandler from "express-async-handler";
 import Student from "../models/userModel.js";
 import generateToken from "../utils/generateToken.js";
@@ -34,6 +33,54 @@ const authUser= asyncHandler(async(req,res)=>{
    
    
 });
+
+
+
+
+// controllers/contactController.js
+
+// Get all unanswered questions
+export const getUnansweredQuestions = async (req, res) => {
+ 
+  try {
+    const questions = await ContactMessages.find({ answered: false }).populate('userId', 'name phoneNumber').exec();
+    res.status(200).json(questions);
+  } catch (error) {
+    res.status(500).json({ message: 'Error retrieving questions', error });
+  }
+};
+
+export const getansweredQuestions = async (req, res) => {
+     console.log("test1");
+  try {
+    const questions = await ContactMessages.find({ answered: true })
+      .populate("userId", "name phoneNumber")
+      .exec();
+    res.status(200).json(questions);
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving questions", error });
+  }
+};
+// Admin answers a question
+export const answerQuestion = async (req, res) => {
+  const { questionId, answer } = req.body;
+  
+  try {
+    const question = await ContactMessages.findByIdAndUpdate(
+      questionId,
+      { answer, answered: true },
+      { new: true }
+    );
+
+    if (!question) {
+      return res.status(404).json({ message: 'Question not found' });
+    }
+    res.status(200).json({ message: 'Question answered successfully', question });
+  } catch (error) {
+    res.status(500).json({ message: 'Error answering question', error });
+  }
+};
+
 
 
 
