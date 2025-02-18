@@ -13,6 +13,7 @@ import {
   getUnansweredQuestions,
   answerQuestion,
   getansweredQuestions,
+  toggleLikeQuestion,
 } from "../controlers/userControler.js";
 import { protect,isAdmin } from "../middleware/authMiddleware.js";
 
@@ -32,7 +33,7 @@ router.post('/contactMessage',protect,postContactMessages);
 router.get("/unanswered", getUnansweredQuestions);
 router.get("/answered", getansweredQuestions);
 router.put("/answer", answerQuestion); 
-
+router.post("/like/:id", protect,toggleLikeQuestion);
 
 
 export default router;

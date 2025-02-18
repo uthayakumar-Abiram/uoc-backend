@@ -51,16 +51,19 @@ export const getUnansweredQuestions = async (req, res) => {
 };
 
 export const getansweredQuestions = async (req, res) => {
-     console.log("test1");
+ 
   try {
     const questions = await ContactMessages.find({ answered: true })
-      .populate("userId", "name phoneNumber")
+      .populate("userId", "firstName lastName phoneNumber") // Ensure firstName & lastName are fetched
       .exec();
+    console.log(questions);
     res.status(200).json(questions);
   } catch (error) {
     res.status(500).json({ message: "Error retrieving questions", error });
   }
 };
+
+
 // Admin answers a question
 export const answerQuestion = async (req, res) => {
   const { questionId, answer } = req.body;
@@ -284,6 +287,44 @@ const markAsRead =async(req,res)=>{
     }
 }
 
+export const toggleLikeQuestion = async (req, res) => {
+console.log("dfea");
+  try {
+    const { id } = req.params;
+    const { userId } = req.body; 
+
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
+    const question = await ContactMessages.findById(id);
+    if (!question) {
+      return res.status(404).json({ message: "Question not found" });
+    }
+
+    const hasLiked = question.votes.includes(userId);
+
+    if (hasLiked) {
+      // Remove like
+      question.votes = question.votes.filter(
+        (vote) => vote.toString() !== userId
+      );
+    } else {
+      // Add like
+      question.votes.push(userId);
+    }
+
+    await question.save();
+    res
+      .status(200)
+      .json({
+        message: hasLiked ? "Like removed" : "Like added",
+        votes: question.votes.length,
+      });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating like", error });
+  }
+};
 
 const postContactMessages = async (req, res) => {
     try {
