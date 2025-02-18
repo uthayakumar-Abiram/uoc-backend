@@ -14,6 +14,9 @@ import {
   answerQuestion,
   getansweredQuestions,
   toggleLikeQuestion,
+  postAnnouncement,
+  getAnnouncements,
+  deleteQuestion
 } from "../controlers/userControler.js";
 import { protect,isAdmin } from "../middleware/authMiddleware.js";
 
@@ -30,10 +33,13 @@ router.get('/allusers', protect,isAdmin,allUsers);
 router.get('/notifications', protect,notifications); 
 router.put('/markasread', protect,markAsRead);  
 router.post('/contactMessage',protect,postContactMessages);  
+router.post('/announcement',protect,postAnnouncement);  
+router.get('/announcement',protect,getAnnouncements);  
 router.get("/unanswered", getUnansweredQuestions);
 router.get("/answered", getansweredQuestions);
 router.put("/answer", answerQuestion); 
 router.post("/like/:id", protect,toggleLikeQuestion);
+router.delete("/:id", protect, deleteQuestion);
 
 
 export default router;

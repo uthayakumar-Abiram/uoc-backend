@@ -9,6 +9,7 @@ import generateToken from "../utils/generateToken.js";
 import cloudinary from "../utils/cloudinary.js";
 
 import ContactMessages from "../models/contactPage.js";
+import Announcement from "../models/announcement.js";
 
 
 const authUser= asyncHandler(async(req,res)=>{
@@ -348,8 +349,69 @@ const postContactMessages = async (req, res) => {
     }
 }
 
+const postAnnouncement = async (req, res) => {
+    const { _id } = req.user; // Admin ID
+    console.log("adminid:",_id);
+    
+    const { title, content, visible, bulletPoints } = req.body; // Extract data from the request body
 
+    try {
+        // Create a new announcement
+        const newAnnouncement = new Announcement({
+            userId: _id,
+            title,
+            content,
+            visible,
+            bulletPoints
+        });
 
+        // Save the announcement to the database
+        await newAnnouncement.save();
+
+        // Send a success response
+        res.status(201).json({
+            message: "Announcement posted successfully!",
+            announcement: newAnnouncement
+        });
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({
+            message: "Failed to post the announcement.",
+            error: error.message
+        });
+    }
+};
+
+const getAnnouncements = async (req, res) => {
+    try {
+      const announcements = await Announcement.find({ visible: true }).sort({ createdAt: -1 });
+  
+     
+      res.status(200).json(announcements);
+    } catch (error) {
+      res.status(500).json({
+        message: "Failed to fetch announcements.",
+        error: error.message,
+      });
+    }
+};
+
+const deleteQuestion  = async (req, res) => {
+    try {
+     console.log("asdad")
+      const { id } = req.params;
+      const deletedQuestion = await ContactMessages.findByIdAndDelete(id);
+  
+      if (!deletedQuestion) {
+        return res.status(404).json({ error: "Question not found" });
+      }
+  
+      res.json({ message: "Question deleted successfully", id });
+    } catch (error) {
+      res.status(500).json({ error: "Server error" });
+    }
+  };
+  
 export{
-    authUser,registerStudent,logoutUser,getUserProfile,updateUserProfile,allUsers,notifications,markAsRead,postContactMessages
+    authUser,registerStudent,logoutUser,getUserProfile,updateUserProfile,allUsers,notifications,markAsRead,postContactMessages,postAnnouncement,getAnnouncements,deleteQuestion
 };
