@@ -12,7 +12,7 @@ const protect =asyncHandler(async(req,res,next)=>{
   ) {
     token = req.headers.authorization.split(' ')[1];
   }
-console.log(token);
+//console.log(token);
 
   if (!token) {
     return res.status(401).json({ error: 'token missing' })
@@ -21,12 +21,12 @@ console.log(token);
     if(token){
         try{
             const decoded =jwt.verify(token,process.env.JWT_SECRET);
-console.log(decoded);
+//console.log(decoded);
 
             req.user=await User.findById(decoded.userId).select("-password");
             
             if(req.user){
-              console.log(req.user);
+             // console.log(req.user);
               
  
                 next();

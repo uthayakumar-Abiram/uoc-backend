@@ -288,16 +288,19 @@ const markAsRead =async(req,res)=>{
 }
 
 export const toggleLikeQuestion = async (req, res) => {
-console.log("dfea");
   try {
     const { id } = req.params;
-    const { userId } = req.body; 
+    const userId = req.user._id; 
+    console.log("id:",id);
+    console.log("userId:",userId);
 
     if (!userId) {
       return res.status(400).json({ message: "User ID is required" });
     }
 
     const question = await ContactMessages.findById(id);
+    console.log("question: ",question);
+    
     if (!question) {
       return res.status(404).json({ message: "Question not found" });
     }
