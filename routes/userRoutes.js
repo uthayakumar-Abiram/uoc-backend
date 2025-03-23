@@ -16,7 +16,8 @@ import {
   toggleLikeQuestion,
   postAnnouncement,
   getAnnouncements,
-  deleteQuestion
+  deleteQuestion,
+  getansweredQuestionsById
 } from "../controlers/userControler.js";
 import { protect,isAdmin } from "../middleware/authMiddleware.js";
 
@@ -37,6 +38,7 @@ router.post('/announcement',protect,postAnnouncement);
 router.get('/announcement',protect,getAnnouncements);  
 router.get("/unanswered", getUnansweredQuestions);
 router.get("/answered", getansweredQuestions);
+router.get("/answered/:id", getansweredQuestionsById);
 router.put("/answer", answerQuestion); 
 router.post("/like/:id", protect,toggleLikeQuestion);
 router.delete("/:id", protect, deleteQuestion);

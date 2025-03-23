@@ -51,6 +51,28 @@ export const getUnansweredQuestions = async (req, res) => {
   }
 };
 
+export const getansweredQuestionsById = async (req, res) => {
+  const { id } = req.params;
+  console.log("ssss",{id})
+
+  try {
+    const questions = await ContactMessages.find({
+      answered: true,
+      userId: id, 
+    })
+      .populate("userId", "firstName lastName phoneNumber")
+      .exec();
+
+    if (!questions || questions.length === 0) {
+      return res.status(404).json({ message: "No answered questions found" });
+    }
+
+    res.status(200).json(questions);
+  } catch (error) {
+    console.error("Error fetching answered questions:", error);
+    res.status(500).json({ message: "Error retrieving questions", error });
+  }
+};
 export const getansweredQuestions = async (req, res) => {
  
   try {
